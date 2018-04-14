@@ -8,7 +8,7 @@ public class MKVMergePaths
 	
 	MKVMergePaths(String cPath, String oPath)
 	{
-		cmdPath = new File(cPath);
-		outPath = new File(oPath);
+		cmdPath = new File(cPath).getAbsoluteFile();
+		outPath = new File(oPath).getAbsoluteFile();
 	}
 }
