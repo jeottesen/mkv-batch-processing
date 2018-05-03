@@ -160,24 +160,45 @@ public class Series
 		}
 	}
 	
-	
-	
-	Series(String SeriesPath, MKVMergePaths p)
+	public Series(String SeriesPath, MKVMergePaths p)
+	{
+		this(SeriesPath, p, false);
+	}
+
+	public Series(String SeriesPath, MKVMergePaths p, boolean recursive)
 	{
 		Paths = p;
 		
 		sPath = new File(SeriesPath);
 		
-		File[] Files;
-		Files = sPath.listFiles(); //gets a list of all files in the path
+		processFiles(SeriesPath, recursive);
 		
-		System.out.println("Getting track info for: " + sPath.getName());
+		EpCount = Videos.size(); // gets the episode count of the series
+		
+		//gets track information for every file
+		for(Integer iCount = 0; iCount < Videos.size() ; iCount++)
+		{
+			Videos.get(iCount).getTracks(Paths.cmdPath.getPath());
+		}
+		
+	}
+
+	private void processFiles(String path, boolean recursive) {
+		File folder = new File(path);
+		
+		File[] Files;
+		Files = folder.listFiles(); //gets a list of all files in the path
+		
+		System.out.println("Getting track info for: " + folder.getName());
 		
 		extSubs = false;
 		
 		//weeds out all compatible files and puts them in a different container
 		for(Integer iCount = 0;iCount < Files.length ;iCount++)
 		{
+			 if ( Files[iCount].isDirectory() && recursive) {
+				 processFiles(Files[iCount].getAbsolutePath(), recursive);
+			 }
 			
 			if (Files[iCount].getName().endsWith(".mkv") || Files[iCount].getName().endsWith(".MKV")
 			 || Files[iCount].getName().endsWith(".ogm") || Files[iCount].getName().endsWith(".OGM"))
@@ -196,15 +217,6 @@ public class Series
 				extSubs = false;
 			}
 		}
-		
-		EpCount = Videos.size(); // gets the episode count of the series
-		
-		//gets track information for every file
-		for(Integer iCount = 0; iCount < Videos.size() ; iCount++)
-		{
-			Videos.get(iCount).getTracks(Paths.cmdPath.getPath());
-		}
-		
 	}
 	
 }

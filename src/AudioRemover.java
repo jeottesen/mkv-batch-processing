@@ -142,7 +142,7 @@ public class AudioRemover
 		{
 			if(temp[iCount].isDirectory())
 			{
-				AllSeries.add(new Series(temp[iCount].getPath(), Paths));
+				AllSeries.add(new Series(temp[iCount].getPath(), Paths, true));
 			}
 		}
 
