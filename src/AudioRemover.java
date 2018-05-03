@@ -15,7 +15,7 @@ public class AudioRemover
 	private static final String usage = "Usage: mkv-batch-processor from_path to_path [-output file] [--mkvmerge path]\n" + 
                                   "    from_path       - Path to folder you want to process\n" + 
                                   "    to_path         - Path to folder you want the files to end up\n" + 
-                                  "    --output file    - Path to output the script file (Default: ./mkv_batch.bat or ./mkv_batch.sh)\n" +
+                                  "    --output file   - Path to output the script file (Default: ./mkv_batch.bat or ./mkv_batch.sh)\n" +
                                   "    --mkvmerge path - Path to mkvmerge executable\n\n" +
                                   "    It will scan the [from_path] and get the info about the tracks from each file. \n" +
                                   "    it then displays the info and asks what you want to do with it. It will save \n" +
@@ -160,7 +160,7 @@ public class AudioRemover
 		}
 
 
-
+		System.out.println("\nProcessing complete please review '" + batchPath.getAbsoluteFile() + "'. Then run it to process your video files.");
 
 	}
 }
