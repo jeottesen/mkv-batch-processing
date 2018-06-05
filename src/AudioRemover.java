@@ -91,7 +91,8 @@ public class AudioRemover
 		
 		
         MKVMergePaths Paths = new MKVMergePaths(mkvmergePath, // Path to mkvmerge executable
-        										toPath);// Path to modified files
+        										fromPath, // Path to existing files
+        										toPath); // Path to modified files
 		File SeriesPath = new File(fromPath); // Path to files you want to modify
 		ArrayList<Series> AllSeries = new ArrayList<Series>();
 

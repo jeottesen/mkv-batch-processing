@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -119,32 +120,45 @@ public class Episode
 		
 	}
 	
+	public String getLastPartOfPath(MKVMergePaths paths) {
+		
+		String epPathStr = EpPath.getAbsolutePath();
+		String fromPath = paths.fromPath.getAbsolutePath();
+		
+		String lastPart = epPathStr.substring(fromPath.length());
+		 
+		return lastPart;
+	}
+	
 	//makes final command
-	public String makeCommand(String cmdPath, String outPath, String Args)
+	public String makeCommand(MKVMergePaths paths, String args)
 	{
+		String outPath = paths.outPath.getAbsolutePath() + getLastPartOfPath(paths);
 		String sCommand;
-		sCommand = "\"" + cmdPath + "\"";
-		if(EpPath.getName().endsWith(".ogm") || EpPath.getName().endsWith(".OGM"))
+		sCommand = "\"" + paths.cmdPath + "\"";
+		//if the file is not an mkv
+		if(EpPath.getName().matches(".*(?<!\\.mkv)$"))
 		{
-			String sTemp = (EpPath.getName().substring( 0, EpPath.getName().indexOf(".ogm")) + ".mkv");
-			sCommand += (" -o " + "\"" + outPath + "\\" + sTemp + "\"");
+			// make it an mkv
+			String sTemp = outPath.replaceAll("\\.[a-zA-Z]{0,3}$", ".mkv");
+			sCommand += (" -o " + "\"" + sTemp + "\"");
 		}
 		else
 		{
-			sCommand += (" -o " + "\"" + outPath + "\\" + EpPath.getName() + "\"");
+			sCommand += (" -o " + "\"" + outPath + "\"");
 		}
-		sCommand += Args;
+		sCommand += args;
 		sCommand += " -T --no-global-tags " + "\"" + EpPath + "\"";
 		
 		
 		return sCommand;
 	}
 	
-	public String makeCommand(String cmdPath, String outPath, String Args, File subPath)
+	public String makeCommand(MKVMergePaths paths, String args, File subPath)
 	{
 		String sCommand;
 		
-		sCommand = makeCommand(cmdPath, outPath, Args);
+		sCommand = makeCommand(paths, args);
 		
 		sCommand += addSub(subPath);
 		
@@ -397,6 +411,18 @@ public class Episode
 			}
 		}
 		return "";
+	}
+	
+	public static boolean isSubTrack(String filename) {
+		return filename.toLowerCase().endsWith(".ssa") ||
+			   filename.toLowerCase().endsWith(".ass") ||
+			   filename.toLowerCase().endsWith(".srt");
+	}
+
+	public static boolean isVideo(String filename) {
+		return filename.toLowerCase().endsWith(".mkv") ||
+			   filename.toLowerCase().endsWith(".ogm") ||
+			   filename.toLowerCase().endsWith(".avi");
 	}
 	
 }

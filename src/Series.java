@@ -52,6 +52,8 @@ public class Series
 		EpTrackList	= tl; 
 		EpArgList	= al;
 		
+		
+		
 		PrintWriter fileOut;
 		try
 		{
@@ -60,6 +62,7 @@ public class Series
 			//gets commands for each episode and writes them to a batch file
 			for(Integer iCount = 0; iCount < Videos.size(); iCount++)
 			{
+				
 				TrackFound = false;
 				if(EpTrackList.isEmpty() == false)
 				{
@@ -77,14 +80,14 @@ public class Series
 									if(extSubList.get(subit).getName().substring(0, extSubList.get(subit).getName().lastIndexOf(".")).equals(Videos.get(subit).getEpPath().getName().substring(0, Videos.get(it).getEpPath().getName().lastIndexOf("."))))
 									{
 										fileOut = new PrintWriter(new BufferedWriter(new FileWriter(batchPath, true))); // writes command to a batch file
-										fileOut.println(Videos.get(iCount).makeCommand(Paths.cmdPath.getPath(), (Paths.outPath.getPath() + "\\" + sPath.getName()), EpArgList.get(it), extSubList.get(iCount)));
+										fileOut.println(Videos.get(iCount).makeCommand(Paths, EpArgList.get(it), extSubList.get(iCount)));
 										fileOut.close();
 										break;
 									}
 									else
 									{
 										fileOut = new PrintWriter(new BufferedWriter(new FileWriter(batchPath, true))); // writes command to a batch file
-										fileOut.println(Videos.get(iCount).makeCommand(Paths.cmdPath.getPath(), (Paths.outPath.getPath() + "\\" + sPath.getName()), EpArgList.get(it)));
+										fileOut.println(Videos.get(iCount).makeCommand(Paths, EpArgList.get(it)));
 										fileOut.close();
 									}
 								}
@@ -92,7 +95,7 @@ public class Series
 							else
 							{
 								fileOut = new PrintWriter(new BufferedWriter(new FileWriter(batchPath, true))); // writes command to a batch file
-								fileOut.println(Videos.get(iCount).makeCommand(Paths.cmdPath.getPath(), (Paths.outPath.getPath() + "\\" + sPath.getName()), EpArgList.get(it)));
+								fileOut.println(Videos.get(iCount).makeCommand(Paths, EpArgList.get(it)));
 								fileOut.close();
 							}
 							TrackFound = true;
@@ -130,14 +133,14 @@ public class Series
 							if(extSubList.get(it).getName().substring(0, extSubList.get(it).getName().lastIndexOf(".")).equals(Videos.get(it).getEpPath().getName().substring(0, Videos.get(it).getEpPath().getName().lastIndexOf("."))))
 							{
 								fileOut = new PrintWriter(new BufferedWriter(new FileWriter(batchPath, true))); // writes command to a batch file
-								fileOut.println(Videos.get(iCount).makeCommand(Paths.cmdPath.getPath(), (Paths.outPath.getPath() + "\\" + sPath.getName()), FileArguments, extSubList.get(iCount)));
+								fileOut.println(Videos.get(iCount).makeCommand(Paths, FileArguments, extSubList.get(iCount)));
 								fileOut.close();
 								break;
 							}
 							else
 							{
 								fileOut = new PrintWriter(new BufferedWriter(new FileWriter(batchPath, true))); // writes command to a batch file
-								fileOut.println(Videos.get(iCount).makeCommand(Paths.cmdPath.getPath(), (Paths.outPath.getPath() + "\\" + sPath.getName()), FileArguments));
+								fileOut.println(Videos.get(iCount).makeCommand(Paths, FileArguments));
 								fileOut.close();
 							}
 						}
@@ -147,7 +150,7 @@ public class Series
 					{
 						fileOut = new PrintWriter(new BufferedWriter(new FileWriter(batchPath, true))); // writes command to a batch file
 						
-						fileOut.println(Videos.get(iCount).makeCommand(Paths.cmdPath.getPath(), (Paths.outPath.getPath() + "\\" + sPath.getName()), FileArguments));
+						fileOut.println(Videos.get(iCount).makeCommand(Paths, FileArguments));
 						fileOut.close();
 					}
 				}
@@ -196,18 +199,17 @@ public class Series
 		//weeds out all compatible files and puts them in a different container
 		for(Integer iCount = 0;iCount < Files.length ;iCount++)
 		{
-			 if ( Files[iCount].isDirectory() && recursive) {
-				 processFiles(Files[iCount].getAbsolutePath(), recursive);
-			 }
+			String filename = Files[iCount].getName(); 
+			if (Files[iCount].isDirectory() && recursive) {
+				processFiles(Files[iCount].getAbsolutePath(), recursive);
+			}
 			
-			if (Files[iCount].getName().endsWith(".mkv") || Files[iCount].getName().endsWith(".MKV")
-			 || Files[iCount].getName().endsWith(".ogm") || Files[iCount].getName().endsWith(".OGM"))
+			if (Episode.isVideo(filename))
 			{
-				System.out.println(Files[iCount].getName());
+				System.out.println(filename);
 				Videos.add(new Episode(Files[iCount].getPath()));
 			}
-			else if(Files[iCount].getName().endsWith(".ssa") || Files[iCount].getName().endsWith(".ass")
-				|| Files[iCount].getName().endsWith(".srt"))
+			else if(Episode.isSubTrack(filename))
 			{
 				extSubList.add(new File(Files[iCount].getPath()));
 				extSubs = true;
@@ -218,5 +220,7 @@ public class Series
 			}
 		}
 	}
+
+	
 	
 }
